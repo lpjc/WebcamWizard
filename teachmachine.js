@@ -1,8 +1,15 @@
-// the link to your model provided by Teachable Machine export panel
+// 
+// ©lacl may/2021
+//
+
 // https://teachablemachine.withgoogle.com/
-const URL = "https://teachablemachine.withgoogle.com/models/y05iXxPeY/";  //YOU NEED TO REPLACE THIS LINK
+const URL = "https://teachablemachine.withgoogle.com/models/y05iXxPeY/";  //my model
 
 let model, webcam;
+var spellTimer;
+var isTimerOn = false;
+var currentElement;
+
 
 // index of elements:
 // 0: none
@@ -51,25 +58,12 @@ async function start() {
     // append video element (remove/comment line if you do not want the video shown)
     document.getElementById("webcam-container").appendChild(webcam.canvas);
 }
-/*
-let spellQue=[];
-let isKept;
-
-function addToQue(inputSpell){
-    !isKept;
-    spellQue.push(inputSpell);
-}
-*/
 
 async function loop() {
     webcam.update(); // update the webcam frame
     await predict();
     window.requestAnimationFrame(loop);
 }
-
-var spellTimer;
-var isTimerOn = false;
-var currentElement;
 
 function startSpellTimer(i) {
     if(!isTimerOn){
@@ -81,6 +75,14 @@ function startSpellTimer(i) {
         }, 3000);
     } 
   }
+
+function clearTimer(){
+    if (isTimerOn){
+        clearTimeout(spellTimer);
+        console.log("cleared timer");
+        isTimerOn = false;
+    }
+}
 
 // run the webcam image through the ML model
 async function predict() {
@@ -95,15 +97,13 @@ async function predict() {
 
             document.body.style.backgroundImage = elements[i].image;
             document.body.style.backgroundColor = elements[i].color;
+           
             if(elements[i].name === "none"){
-                clearTimeout(spellTimer)
-                console.log("cleared timer");
+                clearTimer()
                 continue; 
             }
             if (currentElement != elements[i]){
-                clearTimeout(spellTimer)
-                isTimerOn = false; 
-                console.log("cleared timer");
+                clearTimer()
             }
             currentElement = elements[i]
             startSpellTimer(i);

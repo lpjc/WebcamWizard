@@ -16,6 +16,20 @@
         #webcam-container{
             align-self: center;
         }
+        #quebox{
+            display: flex;
+            margin: auto;
+            width: 50%;
+            height: 20%;
+            border: 3px solid white;
+            border-width: 13px;
+            padding: 10px;
+            justify-content: space-around;
+            align-items: stretch
+        }
+        #elementbox{
+            object-fit: cover;           
+        }
     </style>
         
 </head>
@@ -23,6 +37,11 @@
 <body onload="start()">
     <div id="main">
         <div id="webcam-container"></div>
+        <div id="quebox">
+            <div id="elementbox"> 1 </div>
+            <div id="elementbox"> 2 </div>
+            <div id="elementbox"> 3 </div>
+        </div>
       </div>
 
 
