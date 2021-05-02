@@ -112,10 +112,20 @@ function resolveQueue(){
             hasMadeCombo = true;
         }  
     }
+  /*  if(hasMadeCombo == false){
+        clearCirlces();
+    }*/
     
-
     spellQueue = []
 }
+
+/*
+
+clearCirlces(){
+    clear here
+}
+
+*/ 
 
 function startSpellTimer(i) {
     if(!isTimerOn){
