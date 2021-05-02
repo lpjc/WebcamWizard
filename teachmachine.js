@@ -17,10 +17,11 @@ let spellQueue = [];
 let hasMadeCombo = false;
 
 // index of elements:
-// 0: none
-// 1: fire
-// 2: water
-// 3: earth
+// 
+// 0: fire
+// 1: water
+// 2: earth
+// 3: none
 
 let elements = [ 
     {
@@ -110,22 +111,22 @@ function resolveQueue(){
             document.body.style.backgroundImage = combinations[i].imageURL;
             document.body.style.backgroundColor = combinations[i].color;
             hasMadeCombo = true;
-        }  
+        }  else {
+            hasMadeCombo = false;
+        }
     }
-  /*  if(hasMadeCombo == false){
+    if(!hasMadeCombo){
         clearCirlces();
-    }*/
+    }
     
     spellQueue = []
 }
 
-/*
-
-clearCirlces(){
-    clear here
+function clearCirlces(){
+    for (let i = 0; i < spellQueue.length; i++) {
+        setCircleColor(i+1,3)
+    }
 }
-
-*/ 
 
 function startSpellTimer(i) {
     if(!isTimerOn){
