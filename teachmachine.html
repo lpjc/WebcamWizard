@@ -13,6 +13,10 @@
             display: flex;
             align-items: center;
         }
+        .spell-img {
+            height: auto;
+            flex: 1;
+        }
         #webcam-container{
             align-self: center;
         }
@@ -27,8 +31,17 @@
             justify-content: space-around;
             align-items: stretch
         }
-        #elementbox{
+        .elementbox{
+            flex: 1;
+            display: flex;
+            flex-direction: row;
             object-fit: cover;           
+        }
+        .circle{
+            background: rgb(255, 255, 255);
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
         }
     </style>
         
@@ -38,13 +51,21 @@
     <div id="main">
         <div id="webcam-container"></div>
         <div id="quebox">
-            <div id="elementbox"> 1 </div>
-            <div id="elementbox"> 2 </div>
-            <div id="elementbox"> 3 </div>
+
+            <div id="que1" class="circle">
+                <img id="img1" src="" class="spell-img">
+            </div>
+
+            <div id="que2" class="circle">
+                <img id="img2" src="" class="spell-img">    
+            </div>
+
+            <div id="que3" class="circle">
+                <img id="img3" src="" class="spell-img">
+            </div>
+
         </div>
       </div>
-
-
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>

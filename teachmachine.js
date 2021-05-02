@@ -2,6 +2,9 @@
 // ©lacl may/2021
 //
 
+
+// ______ INITIALIZE ___________
+
 // https://teachablemachine.withgoogle.com/
 const URL = "https://teachablemachine.withgoogle.com/models/y05iXxPeY/";  //my model
 
@@ -9,7 +12,9 @@ let model, webcam;
 var spellTimer;
 var isTimerOn = false;
 var currentElement;
-
+var img1 
+let spellQueue = [];
+let hasMadeCombo = false;
 
 // index of elements:
 // 0: none
@@ -20,25 +25,48 @@ var currentElement;
 let elements = [ 
     {
         name: "fire",
-        image: "url('fire.gif')",
+        image: "fire.gif",
+        imageURL: "url('fire.gif')",
         color: "maroon"
     },
     {
         name: "water",
-        image: "url('water.gif')",
+        image: "water.gif",
+        imageURL: "url('water.gif')",
         color: "navy"
     },
     {
         name: "earth",
-        image: "url('earth.gif')",
+        image: "earth.gif",
+        imageURL: "url('earth.gif')",
         color: "burlywood"
     },
     {
         name: "none",
-        image: "none",
+        image: "",
+        imageURL: "",
         color: "grey"
     }
 
+]
+
+//index of combo
+
+let combinations = [
+    {
+        name: "steam",
+        combo: "fire,water,fire",
+        image: "steam.gif",
+        imageURL: "url('steam.gif')",
+        color:"white"
+    },
+    {
+        name: "lava",
+        combo: "earth,fire,earth",
+        image: "lava.gif",
+        imageURL: "url('lava.gif')",
+        color: "red"
+    }
 ]
 
 async function start() {
@@ -59,10 +87,34 @@ async function start() {
     document.getElementById("webcam-container").appendChild(webcam.canvas);
 }
 
+// __________ :: MAIN LOOP :: ________
+
 async function loop() {
     webcam.update(); // update the webcam frame
     await predict();
+    // console.log("in main loop");
+    if (spellQueue.length == 3){
+        resolveQueue();
+    }
+
     window.requestAnimationFrame(loop);
+}
+
+// ______________ :: FUNCTIONS :: _______________
+
+function resolveQueue(){
+    console.log(spellQueue +" is spellqueue");
+
+    for (let i = 0; i < combinations.length; i++) {
+        if (spellQueue == combinations[i].combo){
+            document.body.style.backgroundImage = combinations[i].imageURL;
+            document.body.style.backgroundColor = combinations[i].color;
+            hasMadeCombo = true;
+        }  
+    }
+    
+
+    spellQueue = []
 }
 
 function startSpellTimer(i) {
@@ -70,11 +122,24 @@ function startSpellTimer(i) {
         console.log("enteres starttimer for " + elements[i].name);
         isTimerOn = true
         spellTimer = setTimeout(function(){ 
-            console.log(elements[i].name +" is held for 3 secs!");
+            isHeld(i);
             isTimerOn = false;    
-        }, 3000);
+        }, 2300);
     } 
-  }
+}
+
+function isHeld(i){
+    console.log(elements[i].name +" is held for 3 secs!");
+    var queueIndex = spellQueue.push(elements[i].name) //pushes the namestring to array and returns the spot in the array + 1 
+    console.log(queueIndex);
+    if(queueIndex <= 3){
+        setCircleColor(queueIndex,i)
+    }
+}
+
+function setCircleColor(queIndex, eleIndex){
+    document.getElementById("que"+(queIndex)).style.backgroundColor = elements[eleIndex].color;
+}
 
 function clearTimer(){
     if (isTimerOn){
@@ -84,6 +149,7 @@ function clearTimer(){
     }
 }
 
+
 // run the webcam image through the ML model
 async function predict() {
     
@@ -92,19 +158,26 @@ async function predict() {
 
     // make sure prediction match elements, as they use same index in the loop
     for (let i = 0; i < prediction.length; i++) {  
+        if(hasMadeCombo){
+            continue;
+        }
 
         if (prediction[i].probability > 0.95) {
 
-            document.body.style.backgroundImage = elements[i].image;
+            document.body.style.backgroundImage = elements[i].imageURL;
             document.body.style.backgroundColor = elements[i].color;
            
-            if(elements[i].name === "none"){
+            // if element is none, clear timer and skip loop iteration
+            if(elements[i].name === "none"){ 
                 clearTimer()
                 continue; 
             }
+
+            // element changed
             if (currentElement != elements[i]){
                 clearTimer()
             }
+
             currentElement = elements[i]
             startSpellTimer(i);
         }
