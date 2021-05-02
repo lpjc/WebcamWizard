@@ -1,5 +1,5 @@
 // 
-// ©lacl may/2021
+// ©lacl@itu.dk may/2021
 //
 
 
@@ -17,7 +17,6 @@ let spellQueue = [];
 let hasMadeCombo = false;
 
 // index of elements:
-// 
 // 0: fire
 // 1: water
 // 2: earth
@@ -28,25 +27,28 @@ let elements = [
         name: "fire",
         image: "fire.gif",
         imageURL: "url('fire.gif')",
-        color: "maroon"
+        color: "maroon",
+        hue: "1"
     },
     {
         name: "water",
         image: "water.gif",
         imageURL: "url('water.gif')",
-        color: "navy"
+        color: "navy",
+        hue: "210"
     },
     {
         name: "earth",
         image: "earth.gif",
         imageURL: "url('earth.gif')",
-        color: "burlywood"
+        color: "burlywood",
+        hue: "82"
     },
     {
         name: "none",
         image: "",
         imageURL: "",
-        color: "grey"
+        color: "lightgrey"
     }
 
 ]
@@ -67,6 +69,13 @@ let combinations = [
         image: "lava.gif",
         imageURL: "url('lava.gif')",
         color: "red"
+    },
+    {
+        name: "tea",
+        combo: "water,water,fire",
+        image: "tea.gif",
+        imageURL: "url('tea.gif')",
+        color: "LightPink"
     }
 ]
 
@@ -105,26 +114,23 @@ async function loop() {
 
 function resolveQueue(){
     console.log(spellQueue +" is spellqueue");
-
     for (let i = 0; i < combinations.length; i++) {
         if (spellQueue == combinations[i].combo){
             document.body.style.backgroundImage = combinations[i].imageURL;
             document.body.style.backgroundColor = combinations[i].color;
             hasMadeCombo = true;
-        }  else {
-            hasMadeCombo = false;
+            setTimeout(() => {alert("You have created " + combinations[i].name + "!")}, 300);
         }
     }
     if(!hasMadeCombo){
         clearCirlces();
     }
-    
-    spellQueue = []
+    spellQueue = [] 
 }
 
 function clearCirlces(){
     for (let i = 0; i < spellQueue.length; i++) {
-        setCircleColor(i+1,3)
+        document.getElementById("que"+(i+1)).style.backgroundColor = "grey" //hardcoded color for now
     }
 }
 
@@ -135,7 +141,7 @@ function startSpellTimer(i) {
         spellTimer = setTimeout(function(){ 
             isHeld(i);
             isTimerOn = false;    
-        }, 2300);
+        }, 1400);
     } 
 }
 
@@ -175,22 +181,23 @@ async function predict() {
 
         if (prediction[i].probability > 0.95) {
 
-            document.body.style.backgroundImage = elements[i].imageURL;
-            document.body.style.backgroundColor = elements[i].color;
-           
-            // if element is none, clear timer and skip loop iteration
-            if(elements[i].name === "none"){ 
-                clearTimer()
+            if(currentElement == elements[i]){
                 continue; 
-            }
-
-            // element changed
-            if (currentElement != elements[i]){
+            } else {
+               // document.body.style.backgroundColor = elements[i].color;
+                onePixelDo(true,elements[i].hue,100,100);
+                document.getElementById("element1").src = elements[i].image;
+                document.getElementById("element2").src = elements[i].image;
+                // if element is none, clear timer and skip loop iteration
+                if(elements[i].name === "none"){ 
+                    clearTimer()
+                    currentElement = elements[i]
+                    continue; 
+                }
                 clearTimer()
+                currentElement = elements[i]
+                startSpellTimer(i);
             }
-
-            currentElement = elements[i]
-            startSpellTimer(i);
         }
     }
 }

@@ -8,37 +8,44 @@
     <style>
 
         #main {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-content: space-between;
             position: absolute;
             top: 0; right: 0; bottom: 0; left: 0;
+        }
+        #wizard{
             display: flex;
-            align-items: center;
+            flex-direction: row;
+            justify-content: space-evenly;
+        }
+        .elementcontainer{
+            display: flex;
+            background: grey;
+            border-radius: 10%;
+            width: 300px;
+            height: 300px;
+            overflow: hidden;
+            justify-content: center;
         }
         .spell-img {
             height: auto;
             flex: 1;
         }
-        #webcam-container{
-            align-self: center;
+        .ghostcontainer{
+            height: 20%;
+            width: 100%;
         }
         #quebox{
             display: flex;
             margin: auto;
-            width: 50%;
             height: 20%;
-            border: 3px solid white;
-            border-width: 13px;
-            padding: 10px;
+            
             justify-content: space-around;
-            align-items: stretch
-        }
-        .elementbox{
-            flex: 1;
-            display: flex;
-            flex-direction: row;
-            object-fit: cover;           
         }
         .circle{
-            background: rgb(255, 255, 255);
+            background: grey;
             border-radius: 50%;
             width: 100px;
             height: 100px;
@@ -49,7 +56,16 @@
 
 <body onload="start()">
     <div id="main">
-        <div id="webcam-container"></div>
+        <div class="ghostcontainer"></div>
+        <div id="wizard">
+            <div class="elementcontainer">
+                <img id="element1" src="" class="spell-img">
+            </div>
+            <div id="webcam-container"></div>
+            <div class="elementcontainer">
+                <img id="element2" src="" class="spell-img">
+            </div>
+        </div>
         <div id="quebox">
 
             <div id="que1" class="circle">
@@ -65,11 +81,14 @@
             </div>
 
         </div>
-      </div>
+    </div>
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
 <script src="teachmachine.js"></script>
+<script src="chromath.min.js"></script>
+<script src="onepixel.js"></script>
+<script src="https://artnode.org/moja/rgb.js"></script>
 
 </html>
