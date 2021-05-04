@@ -1,11 +1,12 @@
+// ____________::: WEBCAM WIZARD :::____________
 // 
+// Webcam wizard: Make signs with your hands to create elements. Combine elements to create something even cooler!
 // ©lacl@itu.dk may/2021
+// Prediction & recognizion built upon example from moja@itu.dk: teachablemachines example
 //
 
+// __________ :: INITIALIZE ::  _____________
 
-// ______ INITIALIZE ___________
-
-// https://teachablemachine.withgoogle.com/
 const URL = "https://teachablemachine.withgoogle.com/models/y05iXxPeY/";  //my model
 
 let model, webcam;
@@ -15,32 +16,33 @@ var currentElement;
 var img1 
 let spellQueue = [];
 let hasMadeCombo = false;
+let t2Hold = 1300 //time to hold in millisecs
 
-// index of elements:
-// 0: fire
-// 1: water
-// 2: earth
-// 3: none
-
+    // index of elements
+    // 0: fire
+    // 1: water
+    // 2: earth
+    // 3: none
 let elements = [ 
+  
     {
         name: "fire",
-        image: "fire.gif",
-        imageURL: "url('fire.gif')",
+        image: "./images/fire.gif",
+        imageURL: "url('./images/fire.gif')",
         color: "maroon",
         hue: "1"
     },
     {
         name: "water",
-        image: "water.gif",
-        imageURL: "url('water.gif')",
+        image: "./images/water.gif",
+        imageURL: "url('./images/water.gif')",
         color: "navy",
         hue: "210"
     },
     {
         name: "earth",
-        image: "earth.gif",
-        imageURL: "url('earth.gif')",
+        image: "./images/earth.gif",
+        imageURL: "url('./images/earth.gif')",
         color: "burlywood",
         hue: "82"
     },
@@ -52,30 +54,59 @@ let elements = [
     }
 
 ]
-
-//index of combo
-
+    //index of combo
+    // 0: steam
+    // 1: lava
+    // 2: wave
+    // 3 coffee
 let combinations = [
+    // for new combinations:
+    // colorpicker https://hslpicker.com/#9a0404 
+    // find stickers(gifpngs) at giphy.com
     {
         name: "steam",
         combo: "fire,water,fire",
-        image: "steam.gif",
-        imageURL: "url('steam.gif')",
-        color:"white"
+        image: "./images/steam.gif",
+        imageURL: "url('./images/steam.gif')",
+        color:"white",
+        hue: "221", light: "65", sat:"21", 
+        text: "./pngNames/steamText.png"
     },
     {
         name: "lava",
         combo: "earth,fire,earth",
-        image: "lava.gif",
-        imageURL: "url('lava.gif')",
-        color: "red"
+        image: "./images/lava.gif",
+        imageURL: "url('./images/lava.gif')",
+        color: "red",
+        hue: "360", light: "31", sat:"95", 
+        text: "./pngNames/lavaText.png" 
     },
     {
-        name: "tea",
-        combo: "water,water,fire",
-        image: "tea.gif",
-        imageURL: "url('tea.gif')",
-        color: "LightPink"
+        name: "snow",
+        combo: "earth,water,water",
+        image: "./images/snow.gif",
+        imageURL: "url('./images/snow.gif')",
+        color: "blue",
+        hue: "178", light: "68", sat:"25", 
+        text: "./pngNames/snowText.png"
+    },
+    {
+        name: "wave",
+        combo: "water,water,water",
+        image: "./images/wave.gif",
+        imageURL: "url('./images/wave.gif')",
+        color: "blue",
+        hue: "224", light: "31", sat:"95", 
+        text: "./pngNames/waveText.png" 
+    },
+    {
+        name: "coffee",
+        combo: "water,earth,fire",
+        image: "./images/coffee.gif",
+        imageURL: "url('./images/coffee.gif')",
+        color: "brown",
+        hue: "29", light: "28", sat:"71", 
+        text: "./pngNames/coffeeText.png" 
     }
 ]
 
@@ -97,7 +128,7 @@ async function start() {
     document.getElementById("webcam-container").appendChild(webcam.canvas);
 }
 
-// __________ :: MAIN LOOP :: ________
+// ______________ :: MAIN LOOP :: ______________
 
 async function loop() {
     webcam.update(); // update the webcam frame
@@ -110,72 +141,16 @@ async function loop() {
     window.requestAnimationFrame(loop);
 }
 
-// ______________ :: FUNCTIONS :: _______________
+// _______________ :: PREDICTION LOOP :: __________________
 
-function resolveQueue(){
-    console.log(spellQueue +" is spellqueue");
-    for (let i = 0; i < combinations.length; i++) {
-        if (spellQueue == combinations[i].combo){
-            document.body.style.backgroundImage = combinations[i].imageURL;
-            document.body.style.backgroundColor = combinations[i].color;
-            hasMadeCombo = true;
-            setTimeout(() => {alert("You have created " + combinations[i].name + "!")}, 300);
-        }
-    }
-    if(!hasMadeCombo){
-        clearCirlces();
-    }
-    spellQueue = [] 
-}
-
-function clearCirlces(){
-    for (let i = 0; i < spellQueue.length; i++) {
-        document.getElementById("que"+(i+1)).style.backgroundColor = "grey" //hardcoded color for now
-    }
-}
-
-function startSpellTimer(i) {
-    if(!isTimerOn){
-        console.log("enteres starttimer for " + elements[i].name);
-        isTimerOn = true
-        spellTimer = setTimeout(function(){ 
-            isHeld(i);
-            isTimerOn = false;    
-        }, 1400);
-    } 
-}
-
-function isHeld(i){
-    console.log(elements[i].name +" is held for 3 secs!");
-    var queueIndex = spellQueue.push(elements[i].name) //pushes the namestring to array and returns the spot in the array + 1 
-    console.log(queueIndex);
-    if(queueIndex <= 3){
-        setCircleColor(queueIndex,i)
-    }
-}
-
-function setCircleColor(queIndex, eleIndex){
-    document.getElementById("que"+(queIndex)).style.backgroundColor = elements[eleIndex].color;
-}
-
-function clearTimer(){
-    if (isTimerOn){
-        clearTimeout(spellTimer);
-        console.log("cleared timer");
-        isTimerOn = false;
-    }
-}
-
-
-// run the webcam image through the ML model
+// run the webcam image through the ML moodel with
 async function predict() {
-    
-    // predict can take in an image, video or canvas html element
+
     const prediction = await model.predict(webcam.canvas);
 
-    // make sure prediction match elements, as they use same index in the loop
     for (let i = 0; i < prediction.length; i++) {  
-        if(hasMadeCombo){
+        
+        if(hasMadeCombo){ 
             continue;
         }
 
@@ -183,13 +158,14 @@ async function predict() {
 
             if(currentElement == elements[i]){
                 continue; 
-            } else {
-               // document.body.style.backgroundColor = elements[i].color;
-                onePixelDo(true,elements[i].hue,100,100);
+            } else { // When new element is used
+
+                onePixelDo(true,elements[i].hue,50,50);
                 document.getElementById("element1").src = elements[i].image;
                 document.getElementById("element2").src = elements[i].image;
-                // if element is none, clear timer and skip loop iteration
-                if(elements[i].name === "none"){ 
+                document.getElementById("name").src = "";
+                
+                if(elements[i].name === "none"){ // If new element is none
                     clearTimer()
                     currentElement = elements[i]
                     continue; 
@@ -201,3 +177,65 @@ async function predict() {
         }
     }
 }
+
+// ______________ :: FUNCTIONS :: _______________
+
+function resolveQueue(){
+    console.log(spellQueue +" is spellqueue");
+    for (let i = 0; i < combinations.length; i++) {
+        let combo = combinations[i];
+        if (spellQueue == combo.combo){
+            document.getElementById("element1").src = combo.image;
+            document.getElementById("element2").src = combo.image;
+            document.getElementById("name").src = combo.text;
+            onePixelDo(true, combo.hue, combo.sat, combo.light)
+            hasMadeCombo = true;
+            setTimeout(() => {hasMadeCombo = false}, 3000);
+          //  setTimeout(() => {alert("You have created " + combo.name + "!")}, 600);
+        }
+    }
+    clearCirlces()
+}
+
+function clearCirlces(){
+    for (let i = 0; i < spellQueue.length; i++) {
+        document.getElementById("que"+(i+1)).style.backgroundColor = "grey" //hardcoded color for now
+    }
+    spellQueue = [] 
+}
+
+function startSpellTimer(i) {
+    if(!isTimerOn){
+        console.log("enteres starttimer for " + elements[i].name);
+        isTimerOn = true
+        spellTimer = setTimeout(function(){ 
+            isHeld(i);
+            isTimerOn = false;    
+        }, t2Hold);
+    } 
+}
+
+function clearTimer(){
+    if (isTimerOn){
+        clearTimeout(spellTimer);
+        console.log("cleared timer");
+        isTimerOn = false;
+    }
+}
+
+function isHeld(i){
+    console.log(elements[i].name +" is held for "+(t2Hold/1000)+" secs!");
+    var queueIndex = spellQueue.push(elements[i].name) //pushes the namestring to array and returns the spot in the array + 1 
+    console.log(queueIndex);
+    if(queueIndex <= 3){
+        setCircleColor(queueIndex,i)
+    }
+}
+
+function setCircleColor(queIndex, eleIndex){
+    document.getElementById("que"+(queIndex)).style.backgroundColor = elements[eleIndex].color;
+}
+
+
+
+
