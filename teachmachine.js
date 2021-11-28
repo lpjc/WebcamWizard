@@ -13,10 +13,10 @@ let model, webcam;
 var spellTimer;
 var isTimerOn = false;
 var currentElement;
-var img1 
+var img1;
 let spellQueue = [];
 let hasMadeCombo = false;
-let t2Hold = 1300 //time to hold in millisecs
+let t2Hold = 1300; //time to hold in millisecs
 
     // index of elements
     // 0: fire
@@ -55,10 +55,12 @@ let elements = [
 
 ]
     //index of combo
-    // 0: steam
-    // 1: lava
-    // 2: wave
-    // 3 coffee
+    // 0: steam, FWF
+    // 1: lava, EFE
+    // 2: snow, EWW
+    // 3: wave, WWW
+    // 4: coffee, WEF
+
 let combinations = [
     // for new combinations:
     // colorpicker https://hslpicker.com/#9a0404 
